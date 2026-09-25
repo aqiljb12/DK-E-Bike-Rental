@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f172a" />
+  <title>DK Rental System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div>
+        <div class="eyebrow">DEMO SYSTEM</div>
+        <h1 id="brandName">DK E-Bike Rental</h1>
+      </div>
+      <div class="top-actions">
+        <select id="branchSelect" class="branch-select" aria-label="Pilih cawangan">
+          <option value="Senai">Cawangan Senai</option>
+          <option value="Kulai">Cawangan Kulai</option>
+        </select>
+        <button class="icon-btn" id="resetDemoBtn" title="Reset demo">↻</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="page active" data-page="dashboard">
+        <div class="hero-card">
+          <div>
+            <div class="hero-label">Jualan Hari Ini</div>
+            <div class="hero-value" id="todaySales">RM0.00</div>
+            <div class="hero-sub" id="todayRentals">0 rental selesai hari ini</div>
+          </div>
+          <div class="hero-badge">LIVE</div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card"><span>Available</span><strong id="availableCount">0</strong></div>
+          <div class="stat-card"><span>Sedang digunakan</span><strong id="inUseCount">0</strong></div>
+          <div class="stat-card"><span>Maintenance</span><strong id="maintenanceCount">0</strong></div>
+          <div class="stat-card"><span>Total basikal</span><strong id="totalBikeCount">0</strong></div>
+        </div>
+
+        <div class="section-head">
+          <div>
+            <h2>Rental Aktif</h2>
+            <p>Countdown masa penggunaan semasa.</p>
+          </div>
+          <button class="primary small" data-go="rental">+ Rental</button>
+        </div>
+        <div id="activeRentals" class="stack"></div>
+
+        <div class="section-head">
+          <div>
+            <h2>Perlu Perhatian</h2>
+            <p>Basikal yang hampir servis atau dalam maintenance.</p>
+          </div>
+        </div>
+        <div id="attentionList" class="stack"></div>
+      </section>
+
+      <section class="page" data-page="rental">
+        <div class="section-head sticky-section-head">
+          <div>
+            <h2>Mulakan Rental</h2>
+            <p>Scan barcode atau masukkan ID basikal.</p>
+          </div>
+        </div>
+
+        <div class="panel scan-panel">
+          <label for="bikeCode">Barcode / Bike ID</label>
+          <div class="input-row">
+            <input id="bikeCode" autocomplete="off" placeholder="Contoh: EB001" />
+            <button id="scanDemoBtn" class="secondary">Scan Demo</button>
+          </div>
+          <p class="hint">Demo ini guna scan simulasi. Kamera/barcode sebenar boleh ditambah kemudian.</p>
+        </div>
+
+        <div id="bikePreview" class="panel hidden"></div>
+
+        <div class="panel">
+          <label>Tempoh</label>
+          <div class="segmented" id="durationOptions">
+            <button class="seg active" data-minutes="30">30 min</button>
+            <button class="seg" data-minutes="60">60 min</button>
+            <button class="seg" data-minutes="90">90 min</button>
+          </div>
+
+          <div class="form-grid">
+            <div>
+              <label for="priceInput">Harga</label>
+              <div class="money-input"><span>RM</span><input id="priceInput" type="number" min="0" step="0.50" value="10" /></div>
+            </div>
+            <div>
+              <label for="customerName">Nama pelanggan <span class="muted">(optional)</span></label>
+              <input id="customerName" placeholder="Contoh: Amir" />
+            </div>
+          </div>
+
+          <button id="startRentalBtn" class="primary full" disabled>Mulakan Rental</button>
+        </div>
+
+        <div class="section-head">
+          <div>
+            <h2>Rental Sedang Jalan</h2>
+            <p>Boleh tambah masa atau tamatkan rental.</p>
+          </div>
+        </div>
+        <div id="rentalPageActive" class="stack"></div>
+      </section>
+
+      <section class="page" data-page="bikes">
+        <div class="section-head sticky-section-head">
+          <div>
+            <h2>Basikal</h2>
+            <p>Fleet berubah ikut basikal yang sedang elok dan digunakan.</p>
+          </div>
+          <button id="addBikeBtn" class="primary small">+ Basikal</button>
+        </div>
+        <div class="panel toolbar">
+          <input id="bikeSearch" placeholder="Cari ID basikal..." />
+          <select id="bikeStatusFilter">
+            <option value="all">Semua status</option>
+            <option value="available">Available</option>
+            <option value="in_use">In Use</option>
+            <option value="maintenance">Maintenance</option>
+          </select>
+        </div>
+        <div id="bikeList" class="bike-grid"></div>
+      </section>
+
+      <section class="page" data-page="maintenance">
+        <div class="section-head sticky-section-head">
+          <div>
+            <h2>Maintenance</h2>
+            <p>Track servis berdasarkan jam penggunaan dan keadaan basikal.</p>
+          </div>
+        </div>
+        <div class="notice">
+          Battery health dalam demo ialah anggaran berdasarkan penggunaan, bukan bacaan hardware sebenar.
+        </div>
+        <div id="maintenanceList" class="stack"></div>
+      </section>
+
+      <section class="page" data-page="reports">
+        <div class="section-head sticky-section-head">
+          <div>
+            <h2>Reports</h2>
+            <p>Owner boleh tengok jualan dan penggunaan dari jauh.</p>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card"><span>Jualan cawangan</span><strong id="reportSales">RM0.00</strong></div>
+          <div class="stat-card"><span>Rental selesai</span><strong id="reportRentalCount">0</strong></div>
+          <div class="stat-card"><span>Jam penggunaan</span><strong id="reportHours">0h</strong></div>
+          <div class="stat-card"><span>Purata / rental</span><strong id="reportAverage">RM0.00</strong></div>
+        </div>
+
+        <div class="section-head"><div><h2>Transaksi Terkini</h2><p>Rekod rental yang sudah tamat.</p></div></div>
+        <div id="transactionList" class="stack"></div>
+      </section>
+    </main>
+
+    <nav class="bottom-nav">
+      <button class="nav-item active" data-nav="dashboard"><span>⌂</span><small>Home</small></button>
+      <button class="nav-item" data-nav="rental"><span>▦</span><small>Rental</small></button>
+      <button class="nav-item" data-nav="bikes"><span>🚲</span><small>Bikes</small></button>
+      <button class="nav-item" data-nav="maintenance"><span>⚙</span><small>Service</small></button>
+      <button class="nav-item" data-nav="reports"><span>▥</span><small>Report</small></button>
+    </nav>
+  </div>
+
+  <div id="modal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3 id="modalTitle">Tambah Basikal</h3>
+        <button class="icon-btn" id="closeModalBtn">×</button>
+      </div>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
